@@ -30,7 +30,7 @@ export default function Home() {
 				}
 
 				// Start game session by navigating to /game?t=<token> url
-				router.push(`/game?t=${token}`);
+				router.push('/game');
 			} catch (error) {
 				console.error(error);
 			}
