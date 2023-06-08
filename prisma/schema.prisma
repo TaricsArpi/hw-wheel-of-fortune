@@ -1,23 +1,25 @@
 // schema.prisma
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider          = "postgresql"
+  url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl         = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
   shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
 }
 
 model Avatar {
-  id            Int         @id @default(autoincrement())
-  name          String      @unique
-  amount        Decimal     @db.Decimal(10, 2)
-  createdAt     DateTime    @default(now()) @map(name: "created_at")
-  updatedAt     DateTime    @updatedAt @map(name: "updated_at")
-  sessionToken  String?     @unique @map(name: "session_token")
+  id             Int       @id @default(autoincrement())
+  name           String    @unique
+  amount         Decimal   @db.Decimal(10, 2)
+  createdAt      DateTime  @default(now()) @map(name: "created_at")
+  updatedAt      DateTime  @updatedAt @map(name: "updated_at")
+  sessionToken   String?   @unique @map(name: "session_token")
+  tokenExpiresAt DateTime? @map(name: "token_expires_at")
+
   @@map(name: "avatars")
 }
