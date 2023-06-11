@@ -14,7 +14,7 @@ const GamePage = async () => {
 	});
 
 	return (
-		<main className="h-screen flex items-center justify-center flex-col">
+		<div className="h-screen flex items-center justify-center flex-col">
 			<Game
 				avatar={{
 					id: avatar.id,
@@ -22,7 +22,7 @@ const GamePage = async () => {
 					amount: Number(avatar.amount.toString()), // Pisma.Decimal can't be sent to Client Components
 				}}
 			/>
-		</main>
+		</div>
 	);
 };
 
