@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { IAvatar } from "@/types/Avatar";
 import { SectorAction, SpinRequest, SpinResult } from "@/types/GameTypes";
@@ -22,7 +21,7 @@ const Game: FC<GameProps> = ({ avatar }) => {
 				currentAmount: amount,
 				currentPosition: position,
 			};
-			const response = await fetch("/api/game", {
+			const response = await fetch("/api/game-flow", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -56,7 +55,6 @@ const Game: FC<GameProps> = ({ avatar }) => {
 
 				<button onClick={handleClick}>SPIN</button>
 			</div>
-			<Link href="/">Back to the home page!</Link>
 		</>
 	);
 };

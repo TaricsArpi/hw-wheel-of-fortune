@@ -1,32 +1,49 @@
-import { NextResponse, userAgent } from "next/server";
+import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { SESSION_COOKIE_NAME } from "./types/Cookie";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
 	// Check if user has valid game session in progress
 	const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME);
 
-	// Every URL except "/api/*"
-	const regexPattern = /^(?!\/api\/).*/;
-
-	/**
-	 * Pages
-	 */
-	// Tryies to access any page with a sessionCookie set => continue game if possible
-	if (regexPattern.test(request.nextUrl.pathname) && sessionCookie) {
-		return request.nextUrl.pathname.startsWith("/game")
+	// On "/game" if the user has a session token, then continue the game. Redirect otherwise
+	if (request.nextUrl.pathname.startsWith("/game")) {
+		return sessionCookie
 			? NextResponse.next()
-			: NextResponse.redirect(new URL("/game", request.nextUrl.origin));
+			: NextResponse.redirect(new URL("/", request.nextUrl.origin));
 	}
 
-	// Trying to access /game without session token
-	if (request.nextUrl.pathname.startsWith("/game")) {
-		return NextResponse.redirect(new URL("/", request.nextUrl.origin));
+	// When navigating to another page, clear session token if present
+	if (sessionCookie) {
+		try {
+			await fetch(new URL("/api/avatar", request.nextUrl.origin), {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ sessionToken: sessionCookie.value }),
+			});
+		} catch (error) {
+			console.error(error);
+		} finally {
+			const response = NextResponse.next();
+			response.cookies.delete(SESSION_COOKIE_NAME);
+			return response;
+		}
 	}
 
 	return NextResponse.next();
 }
 
 export const config = {
-	matcher: ["/", "/leaderboard", "/game"],
+	matcher: [
+		/*
+		 * Match all request paths except for the ones starting with:
+		 * - api (API routes)
+		 * - _next/static (static files)
+		 * - _next/image (image optimization files)
+		 * - favicon.ico (favicon file)
+		 */
+		"/((?!api|_next/static|_next/image|favicon.ico).*)",
+	],
 };

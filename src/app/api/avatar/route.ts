@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse, userAgent } from "next/server";
 
 import { db } from "@/lib/prisma";
-import { canUseAvatar, getGameToken, getResponseWithCookie } from "@/lib/utils";
+import { canUseAvatar, clearSession, getGameToken, getResponseWithCookie } from "@/lib/utils";
+import { SESSION_COOKIE_NAME } from "@/types/Cookie";
 
+// Called when starting a new game
 export async function POST(request: NextRequest) {
-	const { name: rawName } = await request.json();
-	const name = rawName.toUpperCase() as string;
+	// WORKAROUND: clear stuck session cookie
+	const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME);
+	if (sessionCookie && sessionCookie.value) {
+		await clearSession(sessionCookie.value);
+	}
+
+	const { name }: { name: string } = await request.json();
 	const { ua } = userAgent(request);
 	const ip = request.ip || request.headers.get("x-forwarded-for")?.split(",").shift() || "";
 
@@ -20,11 +27,12 @@ export async function POST(request: NextRequest) {
 	});
 
 	if (!avatar) {
-		const newAvatar = await db.avatar.create({
+		await db.avatar.create({
 			data: {
 				name: name,
 				amount: 10000.0,
 				sessionToken: sessionToken.token,
+				tokenExpiresAt: sessionToken.expiresAt,
 			},
 		});
 
@@ -32,12 +40,13 @@ export async function POST(request: NextRequest) {
 	}
 	// Check selected avatars availability
 	else if (canUseAvatar(avatar)) {
-		const updatedAvatar = await db.avatar.update({
+		await db.avatar.update({
 			where: {
 				id: avatar.id,
 			},
 			data: {
 				sessionToken: sessionToken.token,
+				tokenExpiresAt: sessionToken.expiresAt,
 			},
 		});
 
@@ -48,18 +57,14 @@ export async function POST(request: NextRequest) {
 	return NextResponse.json({ error: "The avatar is already in use. Choose a different one!" });
 }
 
+// Delete session token data for an avatar
 export async function PATCH(request: NextRequest) {
-	const { id } = await request.json();
+	const { sessionToken }: { sessionToken: string } = await request.json();
 
-	// Remove session token
-	await db.avatar.update({
-		where: {
-			id: id,
-		},
-		data: {
-			sessionToken: null,
-		},
-	});
+	if (sessionToken && sessionToken.length) {
+		// Remove session token
+		await clearSession(sessionToken);
+	}
 
-	return NextResponse.json({ sessionCanceled: true });
+	return new Response("OK", { status: 200 });
 }

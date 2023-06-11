@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 
 import { cn } from "@/lib/utils";
+import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,9 +13,11 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en" className={cn("bg-slate-300", inter.className)}>
+		<html lang="en" className={cn("bg-green-900", inter.className)}>
 			<body className={cn("min-h-screen")} suppressHydrationWarning={true}>
-				{children}
+				<Navbar />
+
+				<main>{children}</main>
 			</body>
 		</html>
 	);
