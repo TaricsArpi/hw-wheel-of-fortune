@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse, userAgent } from "next/server";
 
 import { db } from "@/lib/prisma";
-import { canUseAvatar, clearSession, getGameToken, getResponseWithCookie } from "@/lib/utils";
+import { canUseAvatar, getGameToken, getResponseWithCookie } from "@/lib/utils";
 import { SESSION_COOKIE_NAME } from "@/types/Cookie";
+import { clearSession } from "@/lib/db";
 
 // Called when starting a new game
 export async function POST(request: NextRequest) {
