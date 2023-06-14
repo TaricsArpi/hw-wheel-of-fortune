@@ -13,8 +13,8 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en" className={cn("bg-green-700", inter.className)}>
-			<body className={cn("min-h-screen")} suppressHydrationWarning={true}>
+		<html lang="en" className={cn("fixed inset-0 bg-gradient-radial from-lime-450 from-60% via-yellow-350 via-90% to-red-450 to-100% font-fira-sans text-xl", inter.className)}>
+			<body suppressHydrationWarning={true}>
 				<Navbar />
 
 				<main>{children}</main>
