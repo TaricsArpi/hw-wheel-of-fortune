@@ -6,7 +6,6 @@ import { ClassValue, clsx } from "clsx";
 import { createHash } from "crypto";
 import { NextResponse } from "next/server";
 import { twMerge } from "tailwind-merge";
-import { db } from "@/lib/prisma";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -48,29 +47,6 @@ export function getResponseWithCookie(
 		expires: sessionToken.expiresAt,
 	});
 	return response;
-}
-
-/**
- * Clear session in DB
- */
-export async function clearSession(sessionTokenValue: string) {
-	const sessionExists = await db.avatar.findUnique({
-		where: {
-			sessionToken: sessionTokenValue,
-		},
-	});
-
-	if (sessionExists) {
-		await db.avatar.update({
-			where: {
-				sessionToken: sessionTokenValue,
-			},
-			data: {
-				sessionToken: null,
-				tokenExpiresAt: null,
-			},
-		});
-	}
 }
 
 /**
