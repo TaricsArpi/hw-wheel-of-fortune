@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
 	const newToken = getGameToken({ ip, ua, name });
 
-	if (!(currentToken && currentToken.value === newToken.token)) {
+	if (!(currentToken && (currentToken.value === newToken.token))) {
 		console.error("The tokens do not match!");
 		return NextResponse.error();
 	}

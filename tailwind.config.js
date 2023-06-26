@@ -25,7 +25,7 @@ module.exports = {
 			},
       fontFamily: {
         'fira-sans': ['Fira Sans', 'sans-serif']
-      },
+      }
 		},
 	},
 	plugins: [],

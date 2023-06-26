@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import AvatarPicker from "@/components/AvatarPicker";
+import Wheel from "@/components/Wheel";
 import Link from "next/link";
 
 const Home = () => {
@@ -30,6 +31,9 @@ const Home = () => {
 						Check the <Link href="/leaderboard">leaderboard</Link>!
 					</p>
 				</div>
+
+				{/* <Wheel /> */}
+
 			</div>
 		</div>
 	);

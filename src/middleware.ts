@@ -8,9 +8,10 @@ export async function middleware(request: NextRequest) {
 
 	// On "/game" if the user has a session token, then continue the game. Redirect otherwise
 	if (request.nextUrl.pathname.startsWith("/game")) {
-		return sessionCookie
-			? NextResponse.next()
-			: NextResponse.redirect(new URL("/", request.nextUrl.origin));
+		// return sessionCookie
+		// 	? NextResponse.next()
+		// 	: NextResponse.redirect(new URL("/", request.nextUrl.origin));
+		return NextResponse.next();
 	}
 
 	// When navigating to another page, clear session token if present
