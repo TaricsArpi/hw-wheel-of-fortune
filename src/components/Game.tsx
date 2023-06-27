@@ -1,20 +1,24 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 
 import { IAvatar } from "@/types/Avatar";
 import { SectorAction, SpinRequest, SpinResult } from "@/types/GameTypes";
+import Wheel from "@/components/Wheel";
 
 interface GameProps {
 	avatar: IAvatar;
 }
 
 const Game: FC<GameProps> = ({ avatar }) => {
+	const [isLoading, setLoading] = useState(false);
 	const [amount, setAmount] = useState(avatar.amount);
 	const [position, setPosition] = useState(SectorAction.DOUBLE);
 	const [offset, setOffset] = useState(0);
 
-	const handleClick = async () => {
+	const handleSpin = async () => {
+		setLoading(true);
+
 		try {
 			const requestBody: SpinRequest = {
 				name: avatar.name,
@@ -35,8 +39,10 @@ const Game: FC<GameProps> = ({ avatar }) => {
 			setAmount(newAmount);
 			setOffset(newOffset);
 			setPosition(newPosition);
+			setLoading(false);
 		} catch (error) {
 			console.error(error);
+			setLoading(false);
 		}
 	};
 
@@ -53,7 +59,7 @@ const Game: FC<GameProps> = ({ avatar }) => {
 					<li>Offset: {offset}</li>
 				</ul>
 
-				<button onClick={handleClick}>SPIN</button>
+				<Wheel onSpin={handleSpin} offset={offset} isSpinning={isLoading} />
 			</div>
 		</>
 	);

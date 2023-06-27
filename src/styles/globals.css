@@ -1,3 +1,105 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600&display=swap");
+
+/**  
+ * Wheel custom styles
+ */
+
+.wheel-container {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .spin-button {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: green;
+        border-radius: 50%;
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-transform: uppercase;
+        border: 2px solid white;
+        cursor: pointer;
+        color: white;
+        user-select: none;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            width: 20px;
+            height: 30px;
+            background: green;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+    }
+
+    .wheel {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #333;
+        border-radius: 50%;
+        box-shadow: 0 0 0 5px #333,
+        0 0 0 15px #fff,
+        0 0 0 18px #111;
+        overflow: hidden;
+        transition: transform 5s ease-out;
+
+        &.spinning {
+            animation: spinning 0.5s linear 0s infinite;
+        }
+
+        .wheel-section {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            background: var(--clr); 
+            transform-origin: bottom right;
+            transform: rotate(calc(30deg * var(--i)));
+            clip-path: polygon(0 0, 43% 0, 100% 100%, 0 43%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            cursor: pointer;
+
+            span {
+                position: relative;
+                transform: rotate(45deg);
+                transform-origin: center;
+                font-size: 2.5rem;
+                color: white;
+                text-shadow: 3px 5px 2px rgba(0, 0, 0, 0.15);
+            }
+        }
+    }
+}
+
+@keyframes spinning {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spinningEnd {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(75deg);
+    }
+}
